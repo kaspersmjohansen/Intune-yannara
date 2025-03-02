@@ -4,14 +4,16 @@ New-Item -ItemType directory -Path C:\Intune\Winget -ErrorAction SilentlyContinu
 #Start logging
 Start-Transcript -Path "C:\Intune\Winget\winget_install_apps_v1.17.log"
 #Install Winget components baded in Microsoft Docs instruction
-Invoke-WebRequest -Uri https://aka.ms/getwinget -OutFile C:\Intune\Winget\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
+Invoke-WebRequest -Uri https://cdn.winget.microsoft.com/cache/source2.msix -OutFile C:\Intune\Winget\source2.msix
+#Invoke-WebRequest -Uri https://aka.ms/getwinget -OutFile C:\Intune\Winget\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
 Invoke-WebRequest -Uri https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx -OutFile C:\Intune\Winget\Microsoft.VCLibs.x64.14.00.Desktop.appx
 Invoke-WebRequest -Uri https://github.com/microsoft/microsoft-ui-xaml/releases/download/v2.8.6/Microsoft.UI.Xaml.2.8.x64.appx -OutFile C:\Intune\Winget\Microsoft.UI.Xaml.2.8.x64.appx
 #Apply packages in System Context
 #Component Microsoft.VCLibs is okay to fail because Windows might be patched already
 Add-AppxProvisionedPackage -Online -PackagePath 'C:\Intune\Winget\Microsoft.VCLibs.x64.14.00.Desktop.appx' -SkipLicense -ErrorAction SilentlyContinue
 Add-AppxProvisionedPackage -Online -PackagePath 'C:\Intune\Winget\Microsoft.UI.Xaml.2.8.x64.appx' -SkipLicense -ErrorAction SilentlyContinue
-Add-AppxProvisionedPackage -Online -PackagePath 'C:\Intune\Winget\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle' -SkipLicense
+#Add-AppxProvisionedPackage -Online -PackagePath 'C:\Intune\Winget\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle' -SkipLicense
+Add-AppxProvisionedPackage -Online -PackagePath 'C:\Intune\Winget\source2.msix' -SkipLicense
 Start-Sleep -Seconds 15
 #Select newest winget.exe file based on folder order and set it as winget variable. File location will be displayed in C:\Intune\Winget\Winget-file-found-from.log. If log file is missing, winget.exe is not found.
 $winget=Get-ChildItem -Path 'C:\Program Files\WindowsApps\' -Filter winget.exe -recurse | Sort-Object -Property 'FullName' -Descending | Select-Object -First 1 -ExpandProperty FullName | Tee-Object -FilePath C:\Intune\Winget\Winget-file-found-from.log
